@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập JS</title>
+</head>
+<body>
+    <h1>BÀI TOÁN TỒN TẠI</h1>
+    <h2>Hãy tìm 1 cách xếp 10 quân hậu vào bàn cờ 10 x 10, sao cho không có quân hậu nào ăn được nhau?</h2>
+    <input type="button" value="Giải pháp" onclick="solveQueens()">
+    <div id="giaiquyetbaitoan"></div>
+
+    <script>
+        function canPlaceQueen(board, row, col) {
+            // Kiểm tra hàng và cột
+            for (let i = 0; i < col; i++) {
+                if (board[row][i]) {
+                    return false;
+                }
+            }
+
+            // Kiểm tra đường chéo trên bên trái
+            for (let i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+                if (board[i][j]) {
+                    return false;
+                }
+            }
+
+            // Kiểm tra đường chéo dưới bên trái
+            for (let i = row, j = col; j >= 0 && i < 10; i++, j--) {
+                if (board[i][j]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function solveQueensUtil(board, col) {
+            // Nếu tất cả các cột đã được kiểm tra, trả về true
+            if (col >= 10) {
+                return true;
+            }
+
+            // Đặt quân hậu cho mỗi hàng trong cột hiện tại
+            for (let i = 0; i < 10; i++) {
+                if (canPlaceQueen(board, i, col)) {
+                    board[i][col] = 1;
+
+                    // Nếu đặt quân hậu ở hàng i, và giải quyết vấn đề cho các cột còn lại, trả về true
+                    if (solveQueensUtil(board, col + 1)) {
+                        return true;
+                    }
+
+                    // Nếu không tìm được vị trí hợp lệ cho quân hậu tiếp theo, thì loại bỏ quân hậu này và thử lại
+                    board[i][col] = 0;
+                }
+            }
+
+            // Nếu không thể đặt quân hậu trong bất kỳ hàng nào, trả về false
+            return false;
+        }
+
+        function solveQueens() {
+            let board = Array(10).fill().map(() => Array(10).fill(0));
+
+            if (!solveQueensUtil(board, 0)) {
+                document.getElementById("giaiquyetbaitoan").innerText = "Không có giải pháp.";
+                return false;
+            }
+
+            let solutionString = "Giải pháp:<br>";
+            for (let i = 0; i < 10; i++) {
+                solutionString += board[i].join(" ") + "<br>";
+            }
+            document.getElementById("giaiquyetbaitoan").innerHTML = solutionString + (" 1 là quân hậu ; 0 là ô cờ trống");
+            return true;
+        }
+    </script>
+</body>

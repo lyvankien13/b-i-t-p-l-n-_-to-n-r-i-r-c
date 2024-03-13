@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>baitap js</title>
+</head>
+<body>
+    <!--hien thi web-->
+<h1>BÀI TOÁN ĐẾM</h1>
+<h2> Bạn muốn mua một cặp giày từ một cửa hàng có sẵn 5 màu và 4 kích cỡ. Có bao nhiêu cách 
+    chọn?</h2>
+<input type="submit" value="Ket Qua" onclick="baitoandem()">
+<div id="baitoandem"></div>    
+<!--xu li thuat toan-->
+    <script>
+        function baitoandem(){
+            // Số lượng màu giày
+const soLuongMau = 5;
+// Số lượng kích cỡ giày
+const soLuongKichCo = 4;
+// Số cách chọn
+const soCachChon = soLuongMau * soLuongKichCo;
+console.log("Số cách chọn một cặp giày là: " + soCachChon);
+let kq = document.getElementById("baitoandem")
+console.log(kq)
+kq.innerHTML=" so cach chon 1 cap giay la : " +soCachChon
+        }
+    </script>
+    
+</body>
+</html>

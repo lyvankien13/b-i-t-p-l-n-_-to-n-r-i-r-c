@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập JS</title>
+</head>
+<body>
+    <!-- Hiển thị web -->
+    <h1>BÀI TOÁN LIỆT KÊ</h1>
+    <h2>Liệt kê tất cả các tập hợp con của tập {1, 2, 3, 4}.</h2>
+    <button onclick="printResult()"> Kết Quả</button>
+    <div id="ketqua"></div>    
+    <!-- Xử lí thuật toán -->
+    <script>
+        // Hàm generateSubsets nhận một mảng đầu vào và trả về tất cả các tập hợp con của mảng đó
+        function generateSubsets(arr) {
+            // Mảng để lưu trữ tất cả các tập hợp con
+            const subsets = [];
+
+            // Hàm đệ quy backtrack để tạo các tập hợp con
+            function backtrack(start, currentSubset) {
+                // Thêm tập hợp con hiện tại vào mảng subsets
+                subsets.push(currentSubset.slice());
+
+                // Duyệt qua các phần tử từ vị trí start đến hết mảng
+                for (let i = start; i < arr.length; i++) {
+                    // Thêm phần tử arr[i] vào tập hợp con hiện tại
+                    currentSubset.push(arr[i]);
+                    // Gọi đệ quy backtrack với vị trí bắt đầu là i+1 và tập hợp con hiện tại
+                    backtrack(i + 1, currentSubset);
+                    // Loại bỏ phần tử cuối cùng để chuẩn bị cho các kết quả tiếp theo
+                    currentSubset.pop();
+                }
+            }
+
+            // Gọi hàm backtrack với vị trí bắt đầu là 0 và tập hợp con ban đầu là một mảng rỗng
+            backtrack(0, []);
+
+            // Trả về tất cả các tập hợp con đã tạo được
+            return subsets;
+        }
+
+        // Tập hợp ban đầu
+        const originalSet = [1, 2, 3, 4];
+
+        // Gọi hàm generateSubsets để tạo ra tất cả các tập hợp con của tập hợp ban đầu
+        const allSubsets = generateSubsets(originalSet);
+
+        // Hàm để in kết quả
+        function printResult() {
+            let kq = document.getElementById("ketqua"); 
+            kq.innerHTML = "<b>Tất cả các tập hợp con của {1, 2, 3, 4} là:</b><br>";
+            allSubsets.forEach(subset => {
+                kq.innerHTML += "[" + subset.join(", ") + "]<br>";
+            });
+        }
+    </script>  
+</body>
+</html>

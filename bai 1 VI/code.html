@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kruskal Algorithm</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    #graph {
+        margin-bottom: 20px;
+    }
+    input {
+        width: 40px;
+    }
+    button {
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div>
+    <label for="vertices">Số đỉnh:</label>
+    <input type="number" id="vertices" min="2" max="10" value="5">
+    <button onclick="createMatrix()">Tạo ma trận</button>
+</div>
+
+<div id="matrixDiv" style="display: none;">
+    <h3>Nhập ma trận trọng số:</h3>
+    <table id="matrixTable"></table>
+    <button onclick="runKruskal()">Run Kruskal Algorithm</button>
+</div>
+
+<div id="graph"></div>
+
+<script>
+    let verticesInput = document.getElementById("vertices");
+    let matrixDiv = document.getElementById("matrixDiv");
+    let matrixTable = document.getElementById("matrixTable");
+
+    // Hiển thị ma trận nhập dữ liệu
+    function createMatrix() {
+        let vertices = parseInt(verticesInput.value);
+        matrixTable.innerHTML = "";
+
+        let matrixContent = "";
+        for (let i = 0; i < vertices; i++) {
+            matrixContent += "<tr>";
+            for (let j = 0; j < vertices; j++) {
+                matrixContent += "<td><input type='number' id='weight_" + i + "_" + j + "' min='0'></td>";
+            }
+            matrixContent += "</tr>";
+        }
+
+        matrixTable.innerHTML = matrixContent;
+        matrixDiv.style.display = "block";
+    }
+
+    // Định nghĩa một class để biểu diễn một cạnh trong đồ thị
+    class Edge {
+        constructor(src, dest, weight) {
+            this.src = src;
+            this.dest = dest;
+            this.weight = weight;
+        }
+    }
+
+    // Định nghĩa một class để biểu diễn một đồ thị
+    class Graph {
+        constructor(vertices) {
+            this.V = vertices; // Số lượng đỉnh
+            this.edges = [];   // Danh sách cạnh
+        }
+
+        // Thêm một cạnh vào đồ thị
+        addEdge(src, dest, weight) {
+            this.edges.push(new Edge(src, dest, weight));
+        }
+
+        // Thực hiện thuật toán Kruskal và in ra cây bao trùm nhỏ nhất
+        kruskalMST() {
+            let result = []; // Lưu trữ các cạnh của cây bao trùm nhỏ nhất
+            let i = 0; // Biến đếm, dùng để lặp qua danh sách các cạnh được sắp xếp
+
+            // Sắp xếp các cạnh theo thứ tự tăng dần của trọng số
+            this.edges.sort((a, b) => a.weight - b.weight);
+
+            // Khởi tạo một mảng để lưu trữ cha của mỗi đỉnh
+            let parent = [];
+            for (let v = 0; v < this.V; ++v) {
+                parent.push(v);
+            }
+
+            // Hàm tìm cha của một đỉnh
+            function find(parent, i) {
+                if (parent[i] === i)
+                    return i;
+                return find(parent, parent[i]);
+            }
+
+            // Hàm gộp hai tập hợp
+            function union(parent, x, y) {
+                let xset = find(parent, x);
+                let yset = find(parent, y);
+                parent[xset] = yset;
+            }
+
+            // Số cạnh của cây bao trùm nhỏ nhất sẽ là V - 1
+            while (result.length < this.V - 1) {
+                // Lấy cạnh tiếp theo trong danh sách các cạnh được sắp xếp
+                let next_edge = this.edges[i++];
+
+                let x = find(parent, next_edge.src);
+                let y = find(parent, next_edge.dest);
+
+                // Nếu việc thêm cạnh này không tạo ra chu trình, thêm cạnh vào cây
+                if (x !== y) {
+                    result.push(next_edge);
+                    union(parent, x, y);
+                }
+            }
+
+            // In ra cây bao trùm nhỏ nhất
+            let graphContent = "<h3>Cây bao trùm nhỏ nhất:</h3><ul>";
+            for (i = 0; i < result.length; ++i)
+                graphContent += "<li>" + result[i].src + " - " + result[i].dest + ": " + result[i].weight + "</li>";
+            graphContent += "</ul>";
+
+            document.getElementById("graph").innerHTML = graphContent;
+        }
+    }
+
+    // Hàm được gọi khi nhấp vào nút "Run Kruskal Algorithm"
+    function runKruskal() {
+        let vertices = parseInt(verticesInput.value);
+        let g = new Graph(vertices);
+
+        // Lấy dữ liệu từ ma trận và thêm các cạnh vào đồ thị
+        for (let i = 0; i < vertices; i++) {
+            for (let j = i + 1; j < vertices; j++) {
+                let weight = parseInt(document.getElementById("weight_" + i + "_" + j).value);
+                if (!isNaN(weight)) {
+                    g.addEdge(i, j, weight);
+                }
+            }
+        }
+
+        // Thực hiện thuật toán Kruskal và hiển thị kết quả
+        g.kruskalMST();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFS Visualization</title>
+</head>
+<body>
+    <h1>Thuật Toán DFS</h1>
+    <h2>ví dụ : cho đồ thị 5 đỉnh A, B, C, D, E</h2>
+    <canvas id="graphCanvas" width="400" height="400" style="border:1px solid black;"></canvas>
+    <br>
+    <label for="startNode">Nhập đỉnh:</label>
+    <input type="text" id="startNode">
+    <button onclick="runDFS()">Chạy thuật toán</button>
+    <br>
+    <div id="result"></div>
+
+    <script>
+        // Định nghĩa đồ thị dưới dạng danh sách kề
+        const graph = {
+            'A': ['B', 'C'],
+            'B': ['D', 'E'],
+            'C': [],
+            'D': [],
+            'E': []
+        };
+
+        // Hàm vẽ đồ thị
+        function drawGraph() {
+            const canvas = document.getElementById('graphCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            ctx.arc(100, 100, 30, 0, 2 * Math.PI);
+            ctx.fillText('A', 100, 100);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(50, 200, 30, 0, 2 * Math.PI);
+            ctx.fillText('B', 50, 200);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(150, 200, 30, 0, 2 * Math.PI);
+            ctx.fillText('C', 150, 200);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(25, 300, 30, 0, 2 * Math.PI);
+            ctx.fillText('D', 25, 300);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(175, 300, 30, 0, 2 * Math.PI);
+            ctx.fillText('E', 175, 300);
+            ctx.stroke();
+
+            // Vẽ cạnh
+            ctx.beginPath();
+            ctx.moveTo(100, 100);
+            ctx.lineTo(50, 200);
+            ctx.moveTo(100, 100);
+            ctx.lineTo(150, 200);
+            ctx.moveTo(50, 200);
+            ctx.lineTo(25, 300);
+            ctx.moveTo(50, 200);
+            ctx.lineTo(175, 300);
+            ctx.stroke();
+        }
+
+        // Hàm DFS
+        function DFS(graph, start, visited = new Set()) {
+            visited.add(start);
+            document.getElementById('result').innerHTML += start+ "->";
+
+            graph[start].forEach(neighbor => {
+                if (!visited.has(neighbor)) {
+                    DFS(graph, neighbor, visited);
+                }
+            });
+        }
+
+        // Hàm chạy DFS khi nhấn nút
+        function runDFS() {
+            const startNode = document.getElementById('startNode').value.toUpperCase();
+            document.getElementById('result').innerHTML = '';
+            if (graph[startNode]) {
+                document.getElementById('result').innerHTML +=startNode + "có các đỉnh kề là '"   + "':<br>";
+                DFS(graph, startNode);
+            } else {
+                document.getElementById('result').innerHTML = "xin nhập lại giá trị!.";
+            }
+        }
+
+        // Vẽ đồ thị khi trang được tải
+        drawGraph();
+    </script>
+</body>
+</html>

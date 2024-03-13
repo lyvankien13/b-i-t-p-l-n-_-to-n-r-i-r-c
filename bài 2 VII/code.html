@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijkstra's Algorithm</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dijkstra's Algorithm</h1>
+    <div>
+        <label for="startVertex">Nhập đỉnh xuất phát:</label>
+        <input type="number" id="startVertex" min="0">
+        <button onclick="runDijkstra()">Chạy Dijkstra</button>
+    </div>
+    <div id="output"></div>
+
+    <script>
+        // Hàm này tìm đỉnh có khoảng cách nhỏ nhất chưa được duyệt
+        function findMinDistance(dist, visited) {
+            let minDist = Infinity;
+            let minVertex = -1;
+
+            for (let v = 0; v < dist.length; v++) {
+                if (!visited[v] && dist[v] < minDist) {
+                    minDist = dist[v];
+                    minVertex = v;
+                }
+            }
+
+            return minVertex;
+        }
+
+        // Hàm này thực hiện thuật toán Dijkstra
+        function Dijkstra(graph, src) {
+            const V = graph.length;
+            const dist = new Array(V).fill(Infinity);
+            const visited = new Array(V).fill(false);
+            dist[src] = 0;
+
+            for (let i = 0; i < V - 1; i++) {
+                const u = findMinDistance(dist, visited);
+                visited[u] = true;
+
+                for (let v = 0; v < V; v++) {
+                    if (!visited[v] && graph[u][v] !== 0 && dist[u] + graph[u][v] < dist[v]) {
+                        dist[v] = dist[u] + graph[u][v];
+                    }
+                }
+            }
+
+            return dist;
+        }
+
+        // Hàm chạy thuật toán khi nhấn nút
+        function runDijkstra() {
+            const startVertexInput = document.getElementById("startVertex");
+            const startVertex = parseInt(startVertexInput.value);
+            if (isNaN(startVertex)) {
+                alert("Vui lòng nhập một số nguyên làm đỉnh xuất phát.");
+                return;
+            }
+
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "";
+
+            const shortestDistances = Dijkstra(graph, startVertex);
+
+            const table = document.createElement("table");
+            const headerRow = document.createElement("tr");
+            headerRow.innerHTML = "<th>Đỉnh</th><th>Khoảng cách</th>";
+            table.appendChild(headerRow);
+
+            for (let v = 0; v < shortestDistances.length; v++) {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${v}</td><td>${shortestDistances[v]}</td>`;
+                table.appendChild(row);
+            }
+
+            outputDiv.appendChild(table);
+        }
+    </script>
+</body>
+</html>

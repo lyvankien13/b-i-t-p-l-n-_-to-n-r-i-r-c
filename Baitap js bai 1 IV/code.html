@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Toán Tối Ưu</title>
+</head>
+<body>
+    <h1>Bài toán người du lịch: Một người du lịch muốn đi tham quan thành phố T₁, T2, ..., T. Xuất phát
+        từ nội thành phố nào đó người du lịch muốn đi qua tất cả các thành phố còn lại, mỗi thành phố
+        đúng một lần, rồi quay trở lại thành phố xuất phát. Biết c, là chỉ phí đi từ thành phố 7, đến thành
+        phố T, (i, j = 1, 2,..., n), hãy tìm hành trình (một cách đi thoả mãn điều kiện đặt ra) với tổng chi
+        phí là nhỏ nhất?</h1>
+    <button onclick="findOptimalPath()">Hành Trình Tối Ưu</button>
+    <div id="optimalPath"></div>
+
+    <script>
+        // Định nghĩa ma trận chi phí đi từ thành phố i đến thành phố j
+        const costMatrix = [
+            [0, 10, 15, 20],
+            [10, 0, 35, 25],
+            [15, 35, 0, 30],
+            [20, 25, 30, 0]
+        ];
+
+        // Số lượng thành phố
+        const numOfCities = costMatrix.length;
+
+        // Lưu trữ hành trình tốt nhất tìm được
+        let minCost = Number.MAX_SAFE_INTEGER;
+        let optimalPath = [];
+
+        // Hàm tìm hành trình tối ưu
+        function findOptimalPath() {
+            // Mảng lưu trữ hành trình hiện tại
+            const currentPath = [0]; // Bắt đầu từ thành phố đầu tiên
+
+            // Mảng kiểm tra xem thành phố đã được ghé thăm hay chưa
+            const visited = new Array(numOfCities).fill(false);
+            visited[0] = true; // Thành phố đầu tiên đã được ghé thăm
+
+            // Gọi hàm backtracking để tìm hành trình tối ưu
+            backtrack(currentPath, visited, 0, 0);
+
+            // Hiển thị hành trình tối ưu
+            displayOptimalPath();
+        }
+
+        // Hàm quay lui để tìm hành trình tối ưu
+        function backtrack(currentPath, visited, currentCity, cost) {
+            // Nếu đã ghé thăm hết tất cả các thành phố
+            if (currentPath.length === numOfCities && costMatrix[currentCity][0] > 0) {
+                if (cost + costMatrix[currentCity][0] < minCost) {
+                    minCost = cost + costMatrix[currentCity][0];
+                    optimalPath = [...currentPath];
+                }
+                return;
+            }
+
+            // Thử đi từ thành phố hiện tại đến các thành phố khác chưa ghé thăm
+            for (let nextCity = 0; nextCity < numOfCities; nextCity++) {
+                if (!visited[nextCity] && costMatrix[currentCity][nextCity] > 0) {
+                    // Đánh dấu thành phố kế tiếp là đã ghé thăm
+                    visited[nextCity] = true;
+                    // Thêm thành phố kế tiếp vào hành trình
+currentPath.push(nextCity);
+                    // Tiến hành thử đi đến thành phố kế tiếp
+                    backtrack(currentPath, visited, nextCity, cost + costMatrix[currentCity][nextCity]);
+                    // Quay lui: bỏ đi thành phố cuối cùng từ hành trình và đánh dấu là chưa ghé thăm
+                    currentPath.pop();
+                    visited[nextCity] = false;
+                }
+            }
+        }
+
+        // Hàm hiển thị hành trình tối ưu
+        function displayOptimalPath() {
+            let pathStr = "<h2>Hành Trình Tối Ưu:</h2>";
+            for (let i = 0; i < optimalPath.length; i++) {
+                pathStr += optimalPath[i];
+                if (i < optimalPath.length - 1) {
+                    pathStr += " -> ";
+                }
+            }
+            pathStr += " -> 0"; // Quay lại thành phố xuất phát
+            pathStr += "<br><strong>Chi phí tối ưu:</strong> " + minCost;
+            document.getElementById("optimalPath").innerHTML = pathStr;
+        }
+    </script>
+</body>
+</html>
